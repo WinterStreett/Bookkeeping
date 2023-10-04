@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: '123456'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+      MYSQL_DATABASE: 'bookkeeping'
+    volumes:
+      - Mysql_Data:/var/lib/mysql
+    restart: always
+    networks:
+      - test_network
+
+  bookkeeping:
+    container_name: bookkeeping
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      - test_network
+
+volumes:
+  Mysql_Data:
+    external: true
+
+networks:
+  test_network:
